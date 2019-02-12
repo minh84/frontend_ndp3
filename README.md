@@ -15,6 +15,14 @@ Your **README.md** file should be updated with instructions on both how to 1. Ru
 
 For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
 
+### How to run the game
+
+The easiest way is to clone this repo and open `index.html` in Chrome (with Javascript enabled).
+
+### The rule of the game 
+
+The player's goal is to reach the water (top blue square) without hitting the bugs. Everytime the player collides with a bug, the score is reset to 0.
+
 ## Contributing
 
 This repository is the starter code for _all_ Udacity students. Therefore, we most likely will not accept pull requests.

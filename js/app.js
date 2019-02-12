@@ -21,10 +21,10 @@ function isCollide(player, enemy) {
 }
 
 // Enemies our player must avoid
-var Enemy = function(xStart, row) {
+var Enemy = function(xStart, row, speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
-    this.speed = (1 + Math.floor(Math.random() * 4)) * 100;
+    this.speed = speed * 100 + 50*Math.random();
     this.row = row;
 
     this.xStart = xStart;
@@ -63,6 +63,8 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function() {
+    this.score = 0;
+    this.highestScore = 0;
     this.col = 2;
     this.row = 5;
     
@@ -75,7 +77,8 @@ var Player = function() {
 Player.prototype.reset = function() {
     this.col = 2;
     this.row = 5;
-    
+    this.score = 0;
+
     this.x = col2x(this.col);
     this.y = row2y(this.row);
 }
@@ -105,6 +108,10 @@ Player.prototype.handleInput = function(key) {
     } else if (key === 'up') {
         if (this.row === 1) {
             // reset the position since we reached the water
+            this.score += 1;
+            if (this.score > this.highestScore) {
+                this.highestScore = this.score;
+            }
             this.row = 5;
             this.col = 2;
         } else {
@@ -118,9 +125,9 @@ Player.prototype.handleInput = function(key) {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-let allEnemies = [new Enemy(-100, 1), new Enemy(-300, 1), new Enemy(-500, 1),
-                  new Enemy(-100, 2), new Enemy(-300, 2), new Enemy(-500, 2),
-                  new Enemy(-100, 3), new Enemy(-300, 3), new Enemy(-500, 3)
+let allEnemies = [new Enemy(-100, 1, 1), new Enemy(-250, 1, 1), new Enemy(-500, 1, 3),
+                  new Enemy(-100, 2, 1), new Enemy(-250, 2, 1), new Enemy(-1000, 2, 4),
+                  new Enemy(-100, 3, 1), new Enemy(-250, 3, 2), new Enemy(-500, 3, 3)
                     ];
 let player = new Player();
 

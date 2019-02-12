@@ -26,7 +26,12 @@ var Engine = (function(global) {
 
     canvas.width = 505;
     canvas.height = 606;
-    doc.body.appendChild(canvas);
+
+    var container = doc.querySelector('.container');
+    container.appendChild(canvas);
+
+    const curScore = doc.querySelector('#score');
+    const maxScore = doc.querySelector('#highest-score')
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -137,6 +142,12 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
+
+        /*
+         * update score
+         */
+        curScore.textContent = player.score.toString();
+        maxScore.textContent = player.highestScore.toString();
 
         renderEntities();
     }
