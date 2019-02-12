@@ -1,12 +1,35 @@
+// Helpers functions
+
+// convert col => x
+function col2x(col) {
+    return col * 101;
+}
+
+// convert row => y
+function row2y(row) {
+    return row * 83 - 20;
+}
+
+// check if collide with player
+function isCollide(player, enemy) {
+    if (player.row === enemy.row) {
+        // if x-coodinate is close enough we conside it collided
+        return Math.abs(enemy.x - player.x) < 50;
+    }
+
+    return false;
+}
+
 // Enemies our player must avoid
-var Enemy = function() {
+var Enemy = function(xStart, row) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
-    this.speed = Math.floor(Math.random() * 100) + 50;
-    this.row = Math.floor(Math.random() * 3) + 1;
+    this.speed = (1 + Math.floor(Math.random() * 4)) * 100;
+    this.row = row;
 
-    this.x = Math.floor(Math.random() * 20) - 20;
-    this.y = this.row * 83 - 30;
+    this.xStart = xStart;
+    this.x = xStart;
+    this.y = row2y(row);
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
@@ -20,6 +43,15 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     this.x += this.speed * dt;
+
+    // make the bug to go round again
+    if (this.x > 600) {   
+        this.x = this.xStart;
+    }
+
+    if (isCollide(this, player)) {
+        player.reset();
+    }
 };
 
 // Draw the enemy on the screen, required method for game
@@ -34,15 +66,31 @@ var Player = function() {
     this.col = 2;
     this.row = 5;
     
-    this.x = this.col * 101;
-    this.y = this.row * 83;
+    this.x = col2x(this.col);
+    this.y = row2y(this.row);
 
     this.sprite = 'images/char-boy.png';
 }
 
+Player.prototype.reset = function() {
+    this.col = 2;
+    this.row = 5;
+    
+    this.x = col2x(this.col);
+    this.y = row2y(this.row);
+}
+
 Player.prototype.update = function(dt) {
-    this.x = this.col * 101;
-    this.y = this.row * 83;
+    this.x = col2x(this.col);
+    this.y = row2y(this.row);
+
+    // use for ... of so that we can break from the loop
+    for (const enemy of allEnemies) {
+        if (isCollide(this, enemy)) {
+            this.reset();
+            break;
+        }
+    }
 }
 
 Player.prototype.render = function() {
@@ -55,7 +103,13 @@ Player.prototype.handleInput = function(key) {
     } else if (key === 'right') {
         this.col = Math.min(4, this.col + 1);
     } else if (key === 'up') {
-        this.row = Math.max(0, this.row - 1);
+        if (this.row === 1) {
+            // reset the position since we reached the water
+            this.row = 5;
+            this.col = 2;
+        } else {
+            this.row -= 1;
+        }
     } else {
         this.row = Math.min(5, this.row + 1);
     }
@@ -64,7 +118,10 @@ Player.prototype.handleInput = function(key) {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-let allEnemies = [new Enemy(), new Enemy()];
+let allEnemies = [new Enemy(-100, 1), new Enemy(-300, 1), new Enemy(-500, 1),
+                  new Enemy(-100, 2), new Enemy(-300, 2), new Enemy(-500, 2),
+                  new Enemy(-100, 3), new Enemy(-300, 3), new Enemy(-500, 3)
+                    ];
 let player = new Player();
 
 // This listens for key presses and sends the keys to your
